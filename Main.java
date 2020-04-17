@@ -118,13 +118,7 @@ public class Main {
             }
         }
         
-        System.out.println("\nOn vérifie le graph");
-        for(int i = 0; i < theGraph.size(); i++){
-            System.out.println("Le state n° " + theGraph.get(i).getStateNB() + " est un input : " + theGraph.get(i).isInput() + " et est un output :" + theGraph.get(i).isOutput());
-        }
-        
-        System.out.println("Le state n° " + theGraph.get(0).getStateNB() + " a comme vertice " + theGraph.get(0).printSuccessors());
-        System.out.println("Le state n° " + theGraph.get(11).getStateNB() + " a comme predecessor " + theGraph.get(11).printPredecessors());
+        adjencyMatrix(theGraph);
     }
     
     static private int string_to_int(int integer, String string, String message){
@@ -137,5 +131,27 @@ public class Main {
             System.exit(1);
         }
         return integer;
+    }
+    
+    static private void  adjencyMatrix(ArrayList<State> graph){
+        System.out.print("   ");
+        for(int i=0; i< graph.size(); i++){
+            System.out.print(" "+i+"");
+        }
+        System.out.print("\n");
+    }
+    
+    static public void valueMatrix(){
+     ;   
+    }
+    
+    static private void inputOutput(ArrayList<State> graph){
+        System.out.println("\nOn vérifie le graph");
+        for(int i = 0; i < graph.size(); i++){
+            System.out.println("Le state n° " + graph.get(i).getStateNB() + " est un input : " + graph.get(i).isInput() + " et est un output :" + theGraph.get(i).isOutput());
+        }
+        
+        System.out.println("Le state n° " + graph.get(0).getStateNB() + " a comme vertice " + graph.get(0).printSuccessors());
+        System.out.println("Le state n° " + graph.get(11).getStateNB() + " a comme predecessor " + graph.get(11).printPredecessors());
     }
 }
