@@ -82,7 +82,7 @@ public class Main {
                 } else {
                     if(ch == '.'){ // this is obviously the end of readingWeight
                         
-                        iWeight = string_to_int(iWeight, sWeight, "An input state of the graph is not a number : ");
+                        iWeight = string_to_int(iWeight, sWeight, "The weight of a vertice of the graph is not a number : ");
                         
                         theGraph.get(iFrom).setWeight(iWeight);
                         theGraph.get(iFrom).addSuccessors(theGraph.get(iTo));
@@ -119,6 +119,7 @@ public class Main {
         }
         
         adjencyMatrix(theGraph);
+        valueMatrix(theGraph);
     }
     
     static private int string_to_int(int integer, String string, String message){
@@ -145,7 +146,7 @@ public class Main {
         System.out.print("\n");
         
         boolean find = false;
-        for(int i=0; i< graph.size(); i++){ // lignes
+        for(int i=0; i< graph.size(); i++){                                      // lignes
             
             // to get a proper diplayed matrix 
             if(i<10)
@@ -154,9 +155,9 @@ public class Main {
                 System.out.print(" "+i);
             
             
-            for(int j=0; j< graph.size(); j++){
-                for(int k=0; k< graph.get(i).getSuccessorsLength(); k++){
-                    if(graph.get(i).getSuccessors(k).getStateNB() == graph.get(j).getStateNB())
+            for(int j=0; j< graph.size(); j++){                                  // columns
+                for(int k=0; k< graph.get(i).getSuccessorsLength(); k++){        // successors of the line
+                    if(graph.get(i).getSuccessors(k).getStateNB() == graph.get(j).getStateNB())  // check is lines has successors equal to the columns
                         find = true;
                 }
                 if(find){
@@ -171,8 +172,45 @@ public class Main {
         System.out.println("----------------------------------------");
     }
     
-    static public void valueMatrix(){
-     ;   
+    static public void valueMatrix(ArrayList<State> graph){
+     System.out.println("------------- value matrix -------------");
+        System.out.print("   ");
+        for(int i=0; i< graph.size(); i++){
+            if(i<10)
+                System.out.print(" "+i+" ");
+            else
+                System.out.print(" "+i);
+        }
+        System.out.print("\n");
+        
+        boolean find = false;
+        for(int i=0; i< graph.size(); i++){                                      // lignes
+            
+            // to get a proper diplayed matrix 
+            if(i<10)
+                System.out.print(" "+i+" ");
+            else
+                System.out.print(" "+i);
+            
+            
+            for(int j=0; j< graph.size(); j++){                                  // columns
+                for(int k=0; k< graph.get(i).getSuccessorsLength(); k++){        // successors of the line
+                    if(graph.get(i).getSuccessors(k).getStateNB() == graph.get(j).getStateNB())  // check is lines has successors equal to the columns
+                        find = true;
+                }
+                if(find){
+                    if(graph.get(i).getWeight() < 0 || graph.get(i).getWeight()>=10)
+                        System.out.print(" " + graph.get(i).getWeight());
+                    else 
+                        System.out.print(" " + graph.get(i).getWeight() + " ");
+                    find = false;
+                } else  {
+                    System.out.print(" * ");
+                }
+            }
+            System.out.print("\n");
+        }
+        System.out.println("----------------------------------------");
     }
     
     static private void inputOutput(ArrayList<State> graph){
