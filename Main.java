@@ -134,11 +134,41 @@ public class Main {
     }
     
     static private void  adjencyMatrix(ArrayList<State> graph){
+        System.out.println("----------- adjency matrix -------------");
         System.out.print("   ");
         for(int i=0; i< graph.size(); i++){
-            System.out.print(" "+i+"");
+            if(i<10)
+                System.out.print(" "+i+" ");
+            else
+                System.out.print(" "+i);
         }
         System.out.print("\n");
+        
+        boolean find = false;
+        for(int i=0; i< graph.size(); i++){ // lignes
+            
+            // to get a proper diplayed matrix 
+            if(i<10)
+                System.out.print(" "+i+" ");
+            else
+                System.out.print(" "+i);
+            
+            
+            for(int j=0; j< graph.size(); j++){
+                for(int k=0; k< graph.get(i).getSuccessorsLength(); k++){
+                    if(graph.get(i).getSuccessors(k).getStateNB() == graph.get(j).getStateNB())
+                        find = true;
+                }
+                if(find){
+                    System.out.print(" T ");
+                    find = false;
+                } else  {
+                    System.out.print(" F ");
+                }
+            }
+            System.out.print("\n");
+        }
+        System.out.println("----------------------------------------");
     }
     
     static public void valueMatrix(){
@@ -148,7 +178,7 @@ public class Main {
     static private void inputOutput(ArrayList<State> graph){
         System.out.println("\nOn vérifie le graph");
         for(int i = 0; i < graph.size(); i++){
-            System.out.println("Le state n° " + graph.get(i).getStateNB() + " est un input : " + graph.get(i).isInput() + " et est un output :" + theGraph.get(i).isOutput());
+            System.out.println("Le state n° " + graph.get(i).getStateNB() + " est un input : " + graph.get(i).isInput() + " et est un output :" + graph.get(i).isOutput());
         }
         
         System.out.println("Le state n° " + graph.get(0).getStateNB() + " a comme vertice " + graph.get(0).printSuccessors());
