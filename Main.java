@@ -5,13 +5,42 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {        
+    public static void main(String[] args) {      
+        boolean continu = false;
+        int choice;
         ArrayList<State> theGraph = new ArrayList<>();
         
+        do{
+            String graph = "";
+            Scanner sc = new Scanner(System.in);
+            
+            System.out.println("Which graph du you want to try ? 1,2,3...");
+            graph = sc.nextLine();
+            graph = graph.concat(".txt");
+            theGraph.clear();
+            theGraph = fillGraph(theGraph, graph);
+            
+            adjencyMatrix(theGraph);
+            valueMatrix(theGraph);
+            
+            System.out.println("Do you want to try another graph ? 0/1");
+            choice = sc.nextInt();
+            if(choice == 1)
+                continu = true;
+            else 
+                continu = false;
+            System.out.println("\n\n\n\n\n\n\n\n\n\n");
+            
+        }while(continu);
+        
+    }
+    
+    static private ArrayList<State> fillGraph(ArrayList<State> theGraph, String file){
         List<String> data = null; 
-        try { data = Files.readAllLines(Paths.get("1.txt"));
+        try { data = Files.readAllLines(Paths.get(file));
         } catch (IOException ex) {
             System.out.println("le problème est :" + ex);
         }
@@ -117,9 +146,7 @@ public class Main {
                 }
             }
         }
-        
-        adjencyMatrix(theGraph);
-        valueMatrix(theGraph);
+        return theGraph;
     }
     
     static private int string_to_int(int integer, String string, String message){
