@@ -1,4 +1,4 @@
-package javaapplication5;
+﻿package javaapplication5;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+	// pour push
     public static void main(String[] args) {      
         boolean continu = false;
         int choice;
