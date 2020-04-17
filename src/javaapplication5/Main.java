@@ -17,9 +17,15 @@ public class Main {
             System.out.println("le problème est :" + ex);
         }
         
-        boolean total = true, inputs = false, outputs = false;        
+        // var to initialize graph's length and input and output
+        boolean total = true, inputs = false, outputs = false;  
+        int length = 0, Input = 0, Output = 0;      
         String state = "";
-        int length = 0, Input = 0, Output = 0;
+        
+        // var to initialize the vertices
+        String sFrom = "", sTo = "", sWeight = "";
+        boolean readingFrom = true, readingTo = false, readingWeight = false;
+        int iFrom = 0, iTo = 0, iWeight = 0;
         
         for (String line : data) {              // we moove from a line to another
             char[] thing = line.toCharArray();  // we get each char from the line
@@ -27,18 +33,10 @@ public class Main {
                 // create the empty entire graph 
                 if(total){                        
                     if(ch == '.'){
-                        try {
-                           length = Integer.parseInt(state);
-                        }
-                        catch (NumberFormatException ex)
-                        {
-                            System.out.println("Length of the graph is not a number : " + ex);
-                            System.exit(1);
-                        }
-                        System.out.println("length = " + length);
+                        length = string_to_int(length, state, "Length of the graph is not a number : ");
 
                         for(int i = 0; i < length; i++){
-                            State newState = new State();
+                            State newState = new State(i);
                             theGraph.add(newState);
                         }
 
@@ -51,30 +49,15 @@ public class Main {
                 // initialize the inputs
                 } else if(inputs){ 
                     if(ch == '.'){
-                        try {
-                           Input = Integer.parseInt(state);
-                        }
-                        catch (NumberFormatException ex)
-                        {
-                            System.out.println("An input state of the graph is not a number : " + ex);
-                            System.exit(1);
-                        }
-                        
+                        Input = string_to_int(Input, state, "An input state of the graph is not a number : ");                        
                         theGraph.get(Input).setInput(true);
+                        state = "";         // reinitialize before reusing it 
                         
                         inputs = false;      
                         outputs = true;    // the next step is to initialize the outputs
-                        state = "";         // reinitialize before reusing it 
-                    } else if (ch == ' '){
-                        try {
-                           Input = Integer.parseInt(state);
-                        }
-                        catch (NumberFormatException ex)
-                        {
-                            System.out.println("An input state of the graph is not a number : " + ex);
-                            System.exit(1);
-                        }
                         
+                    } else if (ch == ' '){
+                        Input = string_to_int(Input, state, "An input state of the graph is not a number : ");                        
                         theGraph.get(Input).setInput(true);
                         state = "";         // reinitialize before reusing it 
                     } else {
@@ -83,41 +66,77 @@ public class Main {
                 // now initialize the outputs
                 } else if(outputs){
                     if(ch == '.'){
-                        try {
-                           Output = Integer.parseInt(state);
-                        }
-                        catch (NumberFormatException ex)
-                        {
-                            System.out.println("An input state of the graph is not a number : " + ex);
-                            System.exit(1);
-                        }
+                        Output = string_to_int(Output, state, "An output state of the graph is not a number : ");                        
+                        theGraph.get(Output).setOutput(true);                          
+                        state = "";         // reinitialize before reusing it    
                         
-                        theGraph.get(Output).setOutput(true);
-                             
                         outputs = false;    // the next state is to fill the vertices
-                        state = "";         // reinitialize before reusing it 
-                    } else if (ch == ' '){
-                        try {
-                           Output = Integer.parseInt(state);
-                        }
-                        catch (NumberFormatException ex)
-                        {
-                            System.out.println("An input state of the graph is not a number : " + ex);
-                            System.exit(1);
-                        }
                         
+                    } else if (ch == ' '){
+                        Output = string_to_int(Output, state, "An output state of the graph is not a number : ");                        
                         theGraph.get(Output).setOutput(true);
                         state = "";         // reinitialize before reusing it 
                     } else {
                         state = state.concat(ch+"");
                     }
+                // we create now all the vertices
+                } else {
+                    if(ch == '.'){ // this is obviously the end of readingWeight
+                        
+                        iWeight = string_to_int(iWeight, sWeight, "An input state of the graph is not a number : ");
+                        
+                        theGraph.get(iFrom).setWeight(iWeight);
+                        theGraph.get(iFrom).addSuccessors(theGraph.get(iTo));
+                        theGraph.get(iTo).addPredecessors(theGraph.get(iFrom));
+                        
+                        sFrom = sTo = sWeight = "";
+                        iFrom = iTo = iWeight = 0;
+                        readingFrom = true;
+                        readingTo = readingWeight = false;
+                    } else if (ch == ' '){                        
+                        if(readingFrom){
+                            readingFrom = false;
+                            readingTo = true;
+                            
+                            iFrom = string_to_int(iFrom, sFrom, "A from state of a vertice isn't a number : ");
+                            
+                        } else { // this is obviously readingTo
+                            readingTo = false;
+                            readingWeight = true;
+                            
+                            iTo = string_to_int(iTo, sTo, "A to state of a vertice isn't a number : ");
+                        }
+                        
+                    } else {
+                        if(readingFrom)
+                            sFrom = sFrom.concat(ch+"");
+                        else if(readingTo)
+                            sTo = sTo.concat(ch+"");
+                        else
+                            sWeight = sWeight.concat(ch+"");
+                    }
                 }
             }
         }
         
-        System.out.println("On vérifie le graph");
+        System.out.println("\nOn vérifie le graph");
         for(int i = 0; i < theGraph.size(); i++){
-            System.out.println("Le state n° " + i + " est un input : " + theGraph.get(i).isInput() + " et est un output :" + theGraph.get(i).isOutput());
+            System.out.println("Le state n° " + theGraph.get(i).getStateNB() + " est un input : " + theGraph.get(i).isInput() + " et est un output :" + theGraph.get(i).isOutput());
         }
+        
+        System.out.println("Le state n° " + theGraph.get(0).getStateNB() + " a comme vertice " + theGraph.get(0).printSuccessors());
+        System.out.println("Le state n° " + theGraph.get(11).getStateNB() + " a comme predecessor " + theGraph.get(11).printPredecessors());
+    }
+    
+    static private int string_to_int(int integer, String string, String message){
+        try {
+            integer = Integer.parseInt(string);
+        }
+        catch (NumberFormatException ex)
+        {
+            System.out.println(message + ex);
+            System.exit(1);
+        }
+        return integer;
     }
 }

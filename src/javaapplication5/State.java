@@ -17,13 +17,13 @@ public class State {
     private boolean input;
     private boolean output;
     private int weight;
+    private int stateNB;
     
-    State(){ 
-        successors = null;
-        predecessors = null;
+    State(int i){ 
         input = false;
         output = false;
-        weight = 0;
+        weight = -1;
+        stateNB = i;
     }
 
     public ArrayList<State> getSuccessors() {
@@ -33,9 +33,28 @@ public class State {
     public void addSuccessors(State next) {
         this.successors.add(next);
     }
-
+    
+    public String printSuccessors() {
+        String succ = "";
+        for(int i = 0; i<this.successors.size(); i++){
+            succ = succ.concat(String.valueOf(this.successors.get(i).getStateNB()) + " ");
+        }
+        return succ;
+    }
+    
     public ArrayList<State> getPredecessors() {
+        for(int i = 0; i<this.predecessors.size(); i++){
+            System.out.println(this.predecessors.get(i));
+        }
         return predecessors;
+    }
+    
+    public String printPredecessors() {
+        String succ = "";
+        for(int i = 0; i<this.predecessors.size(); i++){
+            succ = succ.concat(String.valueOf(this.predecessors.get(i).getStateNB()) + " ");
+        }
+        return succ;
     }
     
     public void addPredecessors(State prev) {
@@ -64,5 +83,13 @@ public class State {
 
     public void setWeight(int weight) {
         this.weight = weight;
+    }
+
+    public int getStateNB() {
+        return stateNB;
+    }
+
+    public void setStateNB(int stateNB) {
+        this.stateNB = stateNB;
     }
 }
