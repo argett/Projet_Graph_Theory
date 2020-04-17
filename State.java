@@ -26,8 +26,12 @@ public class State {
         stateNB = i;
     }
 
-    public ArrayList<State> getSuccessors() {
-        return successors;
+    public State getSuccessors(int i) {
+        return successors.get(i);
+    }
+    
+    public int getSuccessorsLength() {
+        return successors.size();
     }
 
     public void addSuccessors(State next) {
@@ -42,11 +46,8 @@ public class State {
         return succ;
     }
     
-    public ArrayList<State> getPredecessors() {
-        for(int i = 0; i<this.predecessors.size(); i++){
-            System.out.println(this.predecessors.get(i));
-        }
-        return predecessors;
+    public State getPredecessors(int i) {
+        return predecessors.get(i);
     }
     
     public String printPredecessors() {
@@ -91,5 +92,5 @@ public class State {
 
     public void setStateNB(int stateNB) {
         this.stateNB = stateNB;
-    }
+    }   
 }
