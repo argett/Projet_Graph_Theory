@@ -12,17 +12,16 @@ import java.util.ArrayList;
  * @author lilian
  */
 public class State {    
-    private ArrayList<State> successors = new ArrayList<>();
     private ArrayList<State> predecessors = new ArrayList<>();
+    private ArrayList<Integer> weight = new ArrayList<>();
+    private ArrayList<State> successors = new ArrayList<>();
     private boolean input;
     private boolean output;
-    private int weight;
     private int stateNB;
     
     State(int i){ 
         input = false;
         output = false;
-        weight = -1;
         stateNB = i;
     }
 
@@ -42,6 +41,30 @@ public class State {
         String succ = "";
         for(int i = 0; i<this.successors.size(); i++){
             succ = succ.concat(String.valueOf(this.successors.get(i).getStateNB()) + " ");
+        }
+        return succ;
+    }
+    
+    public int getWeight(int i) {
+        return weight.get(i);
+    }
+    
+     public ArrayList<Integer> getWeights() {
+        return weight;
+    }
+    
+    public int getWeightLength() {
+        return weight.size();
+    }
+
+    public void addWeight(int i) {
+        this.weight.add(i);
+    }
+    
+    public String printWeight() {
+        String succ = "";
+        for(int i = 0; i<this.weight.size(); i++){
+            succ = succ.concat(String.valueOf(this.weight.get(i)) + " ");
         }
         return succ;
     }
@@ -78,19 +101,12 @@ public class State {
         this.output = isOutput;
     }
 
-    public int getWeight() {
-        return weight;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
-
     public int getStateNB() {
         return stateNB;
     }
 
     public void setStateNB(int stateNB) {
         this.stateNB = stateNB;
-    }   
+    } 
+    
 }
