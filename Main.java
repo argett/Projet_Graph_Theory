@@ -261,7 +261,7 @@ public class Main {
     
     // PART II - 5)
     static private boolean isSchedulingGraph(ArrayList<State> graph){
-        if(oneInput(graph) && oneOutput(graph) && nonNegative(graph))
+        if(oneInput(graph) && oneOutput(graph) && nonNegative(graph) && sameWeight(graph))
             return true;
         else
             return false;
@@ -281,13 +281,13 @@ public class Main {
     }
     
     static private boolean oneOutput(ArrayList<State> graph){
-        int nb_input = 0;
+        int nb_output = 0;
         for(State temp : graph){
             if(temp.isOutput())
-                nb_input ++;
+                nb_output ++;
         }
         
-        if(nb_input == 1)
+        if(nb_output == 1)
             return true;
         else 
             return false;
@@ -298,14 +298,23 @@ public class Main {
         for(State temp : graph){
             for(int value : temp.getWeights()){
                 if(value < 0)
-                    negative = true;
+            return false;
             }
         }
         
-        if(negative)
-            return false;
-        else 
-            return true;
+        return true;
+    }
+    
+    static private boolean sameWeight(ArrayList<State> graph){
+        for(State temp : graph){
+            for(int value : temp.getWeights()){
+                int refValue = temp.getWeight(0);
+                if(value != refValue)
+                    return false;
+            }
+        }
+        
+        return true;
     }
     // END PART II - 5)
 }
