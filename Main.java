@@ -38,6 +38,7 @@ public class Main {
         
     }
     
+    // INITIALIZATION
     static private ArrayList<State> fillGraph(ArrayList<State> theGraph, String file){
         List<String> data = null; 
         try { data = Files.readAllLines(Paths.get(file));
@@ -113,8 +114,8 @@ public class Main {
                         
                         iWeight = string_to_int(iWeight, sWeight, "The weight of a vertice of the graph is not a number : ");
                         
-                        theGraph.get(iFrom).setWeight(iWeight);
                         theGraph.get(iFrom).addSuccessors(theGraph.get(iTo));
+                        theGraph.get(iFrom).addWeight(iWeight);
                         theGraph.get(iTo).addPredecessors(theGraph.get(iFrom));
                         
                         sFrom = sTo = sWeight = "";
@@ -161,6 +162,20 @@ public class Main {
         return integer;
     }
     
+    // VERIFICATION
+    static private void inputOutput(ArrayList<State> graph){
+        System.out.println("\nOn vérifie le graph");
+        for(int i = 0; i < graph.size(); i++){
+            System.out.println("Le state n° " + graph.get(i).getStateNB() + " est un input : " + graph.get(i).isInput() + " et est un output :" + graph.get(i).isOutput());
+        }
+        
+        System.out.println("Le state n° " + graph.get(0).getStateNB() + " a comme vertice " + graph.get(0).printSuccessors());
+        System.out.println("Le state n° " + graph.get(11).getStateNB() + " a comme predecessor " + graph.get(11).printPredecessors());
+    }
+    // END INITIALIZATION - VERIFICATION
+    
+    
+    // PART I - 4)
     static private void  adjencyMatrix(ArrayList<State> graph){
         System.out.println("----------- adjency matrix -------------");
         System.out.print("   ");
@@ -210,7 +225,7 @@ public class Main {
         }
         System.out.print("\n");
         
-        boolean find = false;
+        int value = -1;
         for(int i=0; i< graph.size(); i++){                                      // lignes
             
             // to get a proper diplayed matrix 
@@ -223,14 +238,16 @@ public class Main {
             for(int j=0; j< graph.size(); j++){                                  // columns
                 for(int k=0; k< graph.get(i).getSuccessorsLength(); k++){        // successors of the line
                     if(graph.get(i).getSuccessors(k).getStateNB() == graph.get(j).getStateNB())  // check is lines has successors equal to the columns
-                        find = true;
+                        value = k;
                 }
-                if(find){
-                    if(graph.get(i).getWeight() < 0 || graph.get(i).getWeight()>=10)
-                        System.out.print(" " + graph.get(i).getWeight());
+                if(value != -1){
+                    if(graph.get(i).getWeight(value) < -9)
+                        System.out.print(graph.get(i).getWeight(value));                        
+                    else if (graph.get(i).getWeight(value) < 0 || graph.get(i).getWeight(value)>=10)
+                        System.out.print(" " + graph.get(i).getWeight(value));
                     else 
-                        System.out.print(" " + graph.get(i).getWeight() + " ");
-                    find = false;
+                        System.out.print(" " + graph.get(i).getWeight(value) + " ");
+                    value = -1;
                 } else  {
                     System.out.print(" * ");
                 }
@@ -239,17 +256,7 @@ public class Main {
         }
         System.out.println("----------------------------------------");
     }
-    
-    static private void inputOutput(ArrayList<State> graph){
-        System.out.println("\nOn vérifie le graph");
-        for(int i = 0; i < graph.size(); i++){
-            System.out.println("Le state n° " + graph.get(i).getStateNB() + " est un input : " + graph.get(i).isInput() + " et est un output :" + graph.get(i).isOutput());
-        }
-        
-        System.out.println("Le state n° " + graph.get(0).getStateNB() + " a comme vertice " + graph.get(0).printSuccessors());
-        System.out.println("Le state n° " + graph.get(11).getStateNB() + " a comme predecessor " + graph.get(11).printPredecessors());
-    }
-    
+    // END PART I - 4)
     
     
     // PART II - 5)
@@ -288,14 +295,17 @@ public class Main {
     
     static private boolean nonNegative(ArrayList<State> graph){
         boolean negative = false;
-        /*for(State temp : graph){
-            if(temp.getWeight() >)
-                nb_input ++;
+        for(State temp : graph){
+            for(int value : temp.getWeights()){
+                if(value < 0)
+                    negative = true;
+            }
         }
         
-        if(nb_input == 1)
-            return true;
-        else */
+        if(negative)
             return false;
+        else 
+            return true;
     }
+    // END PART II - 5)
 }
