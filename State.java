@@ -93,4 +93,7 @@ public class State {
     public void setStateNB(int stateNB) {
         this.stateNB = stateNB;
     }   
+    
+    Class
+    
 }

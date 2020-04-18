@@ -1,4 +1,4 @@
-﻿package javaapplication5;
+package javaapplication5;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-	// pour push
     public static void main(String[] args) {      
         boolean continu = false;
         int choice;
@@ -249,5 +248,54 @@ public class Main {
         
         System.out.println("Le state n° " + graph.get(0).getStateNB() + " a comme vertice " + graph.get(0).printSuccessors());
         System.out.println("Le state n° " + graph.get(11).getStateNB() + " a comme predecessor " + graph.get(11).printPredecessors());
+    }
+    
+    
+    
+    // PART II - 5)
+    static private boolean isSchedulingGraph(ArrayList<State> graph){
+        if(oneInput(graph) && oneOutput(graph) && nonNegative(graph))
+            return true;
+        else
+            return false;
+    }
+    
+    static private boolean oneInput(ArrayList<State> graph){
+        int nb_input = 0;
+        for(State temp : graph){
+            if(temp.isInput())
+                nb_input ++;
+        }
+        
+        if(nb_input == 1)
+            return true;
+        else 
+            return false;
+    }
+    
+    static private boolean oneOutput(ArrayList<State> graph){
+        int nb_input = 0;
+        for(State temp : graph){
+            if(temp.isOutput())
+                nb_input ++;
+        }
+        
+        if(nb_input == 1)
+            return true;
+        else 
+            return false;
+    }
+    
+    static private boolean nonNegative(ArrayList<State> graph){
+        boolean negative = false;
+        /*for(State temp : graph){
+            if(temp.getWeight() >)
+                nb_input ++;
+        }
+        
+        if(nb_input == 1)
+            return true;
+        else */
+            return false;
     }
 }
