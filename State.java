@@ -16,16 +16,26 @@ public class State {
     private ArrayList<State> successors = new ArrayList<>();
     private boolean input;
     private boolean output;
+    private int rank;
     private int stateNB;
     
     State(int i){ 
         input = false;
         output = false;
+        rank = -1;
         stateNB = i;
     }
 
-    public State getSuccessors(int i) {
+    public State getSuccessor(int i) {
         return successors.get(i);
+    }
+    
+    public State setSuccessor(State state, int rank) {
+        return successors.set(rank, state);
+    }
+    
+    public ArrayList<State> getSuccessors() {
+        return successors;
     }
     
     public int getSuccessorsLength() {
@@ -72,6 +82,10 @@ public class State {
         return predecessors.get(i);
     }
     
+    public ArrayList<State> getPredecessors() {
+        return predecessors;
+    }
+    
     public String printPredecessors() {
         String succ = "";
         for(int i = 0; i<this.predecessors.size(); i++){
@@ -98,6 +112,14 @@ public class State {
 
     public void setOutput(boolean isOutput) {
         this.output = isOutput;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 
     public int getStateNB() {

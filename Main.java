@@ -23,8 +23,16 @@ public class Main {
             theGraph.clear();
             theGraph = fillGraph(theGraph, graph);
             
+            
             adjencyMatrix(theGraph);
             valueMatrix(theGraph);
+            theGraph.set(0, makeRanks(theGraph.get(0)));
+            printRanks(theGraph);
+            
+            if(isSchedulingGraph(theGraph))
+                System.out.println("The graph can be scheduled");
+            else 
+                System.out.println("The graph can't be scheduled");
             
             System.out.println("Do you want to try another graph ? 0/1");
             choice = sc.nextInt();
@@ -175,7 +183,7 @@ public class Main {
     // END INITIALIZATION - VERIFICATION
     
     
-    // PART I - 4)
+    // PART I - 2)
     static private void  adjencyMatrix(ArrayList<State> graph){
         System.out.println("----------- adjency matrix -------------");
         System.out.print("   ");
@@ -199,7 +207,7 @@ public class Main {
             
             for(int j=0; j< graph.size(); j++){                                  // columns
                 for(int k=0; k< graph.get(i).getSuccessorsLength(); k++){        // successors of the line
-                    if(graph.get(i).getSuccessors(k).getStateNB() == graph.get(j).getStateNB())  // check is lines has successors equal to the columns
+                    if(graph.get(i).getSuccessor(k).getStateNB() == graph.get(j).getStateNB())  // check is lines has successors equal to the columns
                         find = true;
                 }
                 if(find){
@@ -237,7 +245,7 @@ public class Main {
             
             for(int j=0; j< graph.size(); j++){                                  // columns
                 for(int k=0; k< graph.get(i).getSuccessorsLength(); k++){        // successors of the line
-                    if(graph.get(i).getSuccessors(k).getStateNB() == graph.get(j).getStateNB())  // check is lines has successors equal to the columns
+                    if(graph.get(i).getSuccessor(k).getStateNB() == graph.get(j).getStateNB())  // check is lines has successors equal to the columns
                         value = k;
                 }
                 if(value != -1){
@@ -256,12 +264,44 @@ public class Main {
         }
         System.out.println("----------------------------------------");
     }
+    // END PART I - 2)
+    
+    
+    
+    // PART I - 4)
+    static private State makeRanks(State state){
+        boolean ranked = true;
+        int max_previous_rank = -1; // the maximal rank of the rank of all the predecessors
+        for(State prev : state.getPredecessors()){
+            if(prev.getRank() == -1)
+                ranked = false;
+            else{
+                if(max_previous_rank < prev.getRank())
+                    max_previous_rank = prev.getRank();
+                            
+            }
+        }
+        if(ranked)
+            state.setRank(max_previous_rank+1);
+        
+        for(int i = 0; i<state.getSuccessorsLength(); i++){
+            state.setSuccessor(makeRanks(state.getSuccessor(i)),i);
+        }
+        
+        return state;
+    }
+    
+    static private void printRanks(ArrayList<State> graph){
+        for(State next : graph){
+            System.out.println("The state " + next.getStateNB() + " has the rank " + next.getRank());            
+        }
+    }
     // END PART I - 4)
     
     
     // PART II - 5)
     static private boolean isSchedulingGraph(ArrayList<State> graph){
-        if(oneInput(graph) && oneOutput(graph) && nonNegative(graph) && sameWeight(graph))
+        if(oneInput(graph) && oneOutput(graph) && nonNegative(graph) && sameWeight(graph) && zeroEntry(graph))
             return true;
         else
             return false;
@@ -276,8 +316,10 @@ public class Main {
         
         if(nb_input == 1)
             return true;
-        else 
-            return false;
+        else {
+            System.out.println("There is more than one input");
+            return false;            
+        }
     }
     
     static private boolean oneOutput(ArrayList<State> graph){
@@ -289,16 +331,20 @@ public class Main {
         
         if(nb_output == 1)
             return true;
-        else 
-            return false;
+        else {
+            System.out.println("There is more than one output");
+            return false;            
+        }
     }
     
     static private boolean nonNegative(ArrayList<State> graph){
         boolean negative = false;
         for(State temp : graph){
             for(int value : temp.getWeights()){
-                if(value < 0)
-            return false;
+                if(value < 0){
+                    System.out.println("There is a negative arc");
+                    return false;
+                }
             }
         }
         
@@ -309,8 +355,24 @@ public class Main {
         for(State temp : graph){
             for(int value : temp.getWeights()){
                 int refValue = temp.getWeight(0);
-                if(value != refValue)
-                    return false;
+                if(value != refValue){
+                    System.out.println("At least 2 vertex of a same state doesn't have the same weight");
+                    return false;                    
+                }
+            }
+        }
+        return true;
+    }
+    
+    static private boolean zeroEntry(ArrayList<State> graph){
+        for(State temp : graph){
+            if(temp.isInput()){
+                for(int value : temp.getWeights()){
+                    if(value != 0){
+                        System.out.println("An entry vertice doesn't have a weight of 0");
+                        return false;                    
+                    }
+                }
             }
         }
         
