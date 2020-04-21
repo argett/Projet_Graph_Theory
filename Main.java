@@ -33,14 +33,9 @@ public class Main {
             
             if(isSchedulingGraph(theGraph)){
                 getInput(theGraph).modifInput(computeDist(getInput(theGraph)));    // we put the new Graph with the distance instead of the old graph
+                //theGraph.set(getInput(theGraph).getStateNB(), getInput(theGraph)); // set the distance from the input for every state
                 
-                
-                
-                theGraph.set(getInput(theGraph).getStateNB(), getInput(theGraph)); // set the distance from the input for every state
-                System.out.print("\nThe shortest time is : ");
-                ArrayList<State> early = earlyDate(theGraph);
-                for(State temp : early)
-                    System.out.print(temp.getRank() + "");
+                printEarly(earlyDate(theGraph));
                 
             }
                 
@@ -399,12 +394,14 @@ public class Main {
         ArrayList<State> dateSorted = new ArrayList<>();
         State debut = getInput(graph);
         State fin = getOutput(graph);
-        State curr = debut;
+        State curr = fin;
         
         while(curr != debut){
             for(State prev : curr.getPredecessors()){
-                if(prev == curr.getdPrev())
+                if(prev == curr.getdPrev()){                    
                     dateSorted.add(prev);
+                    curr = prev;
+                }
             }
         }
         /*
@@ -427,14 +424,15 @@ public class Main {
     static private State computeDist(State state){ // compute the maximal distance bewteen a state and the input (all predecessors must have finished)
         int max_previous_dist = 0; // the maximal distance from the state to the input of all the predecessors
         for(State prev : state.getPredecessors()){
-            if((max_previous_dist < state.getdFromInput() + prev.getWeightsOfSucc(state))){
+            
+            if((max_previous_dist < prev.getdFromInput() + prev.getWeightsOfSucc(state))){
                 int weightState = prev.getWeightsOfSucc(state);  
                 int weightVector = prev.getdFromInput();
                 max_previous_dist =  weightState + weightVector;
+                
+                state.setdPrev(prev);
             }
         }
-        
-        System.out.println("State "+state.getStateNB() + " de distance " + state.getdFromInput());
         
         if(state.getdFromInput() < max_previous_dist)
             state.setdFromInput(max_previous_dist);
@@ -444,6 +442,12 @@ public class Main {
         }
         
         return state;
+    }
+    
+    static private void printEarly(ArrayList<State> graph){
+        System.out.println("\nThe shortest time is : ");
+        for(State temp : graph)
+            System.out.println("Le state " + temp.getStateNB() + " et sa distance est de " + temp.getdFromInput());
     }
     // END PART II - 6)
 }
