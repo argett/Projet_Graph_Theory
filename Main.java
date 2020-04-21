@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import static javaapplication5.State.getInput;
+import static javaapplication5.State.getOutput;
 
 public class Main {
     public static void main(String[] args) {      
@@ -29,8 +31,19 @@ public class Main {
             theGraph.set(0, makeRanks(theGraph.get(0)));
             printRanks(theGraph);
             
-            if(isSchedulingGraph(theGraph))
-                System.out.println("The graph can be scheduled");
+            if(isSchedulingGraph(theGraph)){
+                getInput(theGraph).modifInput(computeDist(getInput(theGraph)));    // we put the new Graph with the distance instead of the old graph
+                
+                
+                
+                theGraph.set(getInput(theGraph).getStateNB(), getInput(theGraph)); // set the distance from the input for every state
+                System.out.print("\nThe shortest time is : ");
+                ArrayList<State> early = earlyDate(theGraph);
+                for(State temp : early)
+                    System.out.print(temp.getRank() + "");
+                
+            }
+                
             else 
                 System.out.println("The graph can't be scheduled");
             
@@ -379,4 +392,58 @@ public class Main {
         return true;
     }
     // END PART II - 5)
+    
+    
+    // PART II - 6)
+    static private ArrayList<State> earlyDate(ArrayList<State> graph){
+        ArrayList<State> dateSorted = new ArrayList<>();
+        State debut = getInput(graph);
+        State fin = getOutput(graph);
+        State curr = debut;
+        
+        while(curr != debut){
+            for(State prev : curr.getPredecessors()){
+                if(prev == curr.getdPrev())
+                    dateSorted.add(prev);
+            }
+        }
+        /*
+        int max = 0;
+        State nextState = graph.get(0);
+        
+        for(State temp : graph){
+            for(int i = 0; i<temp.getPredecessorsLength(); i++){                
+                if(max < temp.getRank()+temp.getWeight(i)){
+                    max = temp.getRank()+ temp.getPredecessors(i).getWeightsOf(temp); // the rank + the duration from the predecessor to the actual state 'temp'
+                    nextState = temp.getSuccessor(i);
+                }
+            }
+            dateSorted.add(nextState);            
+        }
+*/
+        return dateSorted;
+    }
+    
+    static private State computeDist(State state){ // compute the maximal distance bewteen a state and the input (all predecessors must have finished)
+        int max_previous_dist = 0; // the maximal distance from the state to the input of all the predecessors
+        for(State prev : state.getPredecessors()){
+            if((max_previous_dist < state.getdFromInput() + prev.getWeightsOfSucc(state))){
+                int weightState = prev.getWeightsOfSucc(state);  
+                int weightVector = prev.getdFromInput();
+                max_previous_dist =  weightState + weightVector;
+            }
+        }
+        
+        System.out.println("State "+state.getStateNB() + " de distance " + state.getdFromInput());
+        
+        if(state.getdFromInput() < max_previous_dist)
+            state.setdFromInput(max_previous_dist);
+        
+        for(int i = 0; i<state.getSuccessorsLength(); i++){
+            state.setSuccessor(computeDist(state.getSuccessor(i)),i);
+        }
+        
+        return state;
+    }
+    // END PART II - 6)
 }
