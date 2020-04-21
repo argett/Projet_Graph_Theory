@@ -395,42 +395,27 @@ public class Main {
         State debut = getInput(graph);
         State fin = getOutput(graph);
         State curr = fin;
-        
+        dateSorted.add(curr);
         while(curr != debut){
             for(State prev : curr.getPredecessors()){
-                if(prev == curr.getdPrev()){                    
+                if(prev == curr.getMaxPrev()){                    
                     dateSorted.add(prev);
                     curr = prev;
                 }
             }
         }
-        /*
-        int max = 0;
-        State nextState = graph.get(0);
-        
-        for(State temp : graph){
-            for(int i = 0; i<temp.getPredecessorsLength(); i++){                
-                if(max < temp.getRank()+temp.getWeight(i)){
-                    max = temp.getRank()+ temp.getPredecessors(i).getWeightsOf(temp); // the rank + the duration from the predecessor to the actual state 'temp'
-                    nextState = temp.getSuccessor(i);
-                }
-            }
-            dateSorted.add(nextState);            
-        }
-*/
         return dateSorted;
     }
     
     static private State computeDist(State state){ // compute the maximal distance bewteen a state and the input (all predecessors must have finished)
-        int max_previous_dist = 0; // the maximal distance from the state to the input of all the predecessors
+        int max_previous_dist = -1; // the maximal distance from the state to the input of all the predecessors
         for(State prev : state.getPredecessors()){
             
             if((max_previous_dist < prev.getdFromInput() + prev.getWeightsOfSucc(state))){
                 int weightState = prev.getWeightsOfSucc(state);  
                 int weightVector = prev.getdFromInput();
-                max_previous_dist =  weightState + weightVector;
-                
-                state.setdPrev(prev);
+                max_previous_dist =  weightState + weightVector;                
+                state.setMaxPrev(prev);
             }
         }
         

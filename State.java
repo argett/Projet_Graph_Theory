@@ -162,10 +162,10 @@ public class State {
         this.dFromInput = dist;
     }
     
-    public State getdPrev() {
+    public State getMaxPrev() {
         return maxPrev;
     }
-    public void setdPrev(State prev) {
+    public void setMaxPrev(State prev) {
         this.maxPrev = prev;
     }
     
