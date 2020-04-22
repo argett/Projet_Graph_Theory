@@ -29,13 +29,15 @@ public class Main {
             adjencyMatrix(theGraph);
             valueMatrix(theGraph);
             theGraph.set(0, makeRanks(theGraph.get(0)));
+            ArrayList<State> ranks = sortedByRank(theGraph);
             printRanks(theGraph);
             
             if(isSchedulingGraph(theGraph)){
-                getInput(theGraph).modifInput(computeDist(getInput(theGraph)));    // we put the new Graph with the distance instead of the old graph
-                //theGraph.set(getInput(theGraph).getStateNB(), getInput(theGraph)); // set the distance from the input for every state
+                getInput(theGraph).modifInput(computeMaxDist(getInput(theGraph)));   // we put the new Graph with the distance instead of the old graph --> used for ealiestDate
+                //getOutput(theGraph).modifInput(computeMinDist(getOutput(theGraph)));   // used for latest date
                 
                 printEarly(earlyDate(theGraph));
+                //printLatest(lateDate(theGraph));
                 
             }
                 
@@ -131,8 +133,9 @@ public class Main {
                         iWeight = string_to_int(iWeight, sWeight, "The weight of a vertice of the graph is not a number : ");
                         
                         theGraph.get(iFrom).addSuccessors(theGraph.get(iTo));
-                        theGraph.get(iFrom).addWeight(iWeight);
+                        theGraph.get(iFrom).addWeightSucc(iWeight);
                         theGraph.get(iTo).addPredecessors(theGraph.get(iFrom));
+                        theGraph.get(iTo).addWeightPred(iWeight);
                         
                         sFrom = sTo = sWeight = "";
                         iFrom = iTo = iWeight = 0;
@@ -257,12 +260,12 @@ public class Main {
                         value = k;
                 }
                 if(value != -1){
-                    if(graph.get(i).getWeight(value) < -9)
-                        System.out.print(graph.get(i).getWeight(value));                        
-                    else if (graph.get(i).getWeight(value) < 0 || graph.get(i).getWeight(value)>=10)
-                        System.out.print(" " + graph.get(i).getWeight(value));
+                    if(graph.get(i).getWeightSucc(value) < -9)
+                        System.out.print(graph.get(i).getWeightSucc(value));                        
+                    else if (graph.get(i).getWeightSucc(value) < 0 || graph.get(i).getWeightSucc(value)>=10)
+                        System.out.print(" " + graph.get(i).getWeightSucc(value));
                     else 
-                        System.out.print(" " + graph.get(i).getWeight(value) + " ");
+                        System.out.print(" " + graph.get(i).getWeightSucc(value) + " ");
                     value = -1;
                 } else  {
                     System.out.print(" * ");
@@ -303,6 +306,14 @@ public class Main {
         for(State next : graph){
             System.out.println("The state " + next.getStateNB() + " has the rank " + next.getRank());            
         }
+    }
+    
+    static ArrayList<State> sortedByRank(ArrayList<State> initGraph){
+        ArrayList<State> newGraph = new ArrayList<>();
+        
+        
+        
+        return newGraph;
     }
     // END PART I - 4)
     
@@ -348,7 +359,7 @@ public class Main {
     static private boolean nonNegative(ArrayList<State> graph){
         boolean negative = false;
         for(State temp : graph){
-            for(int value : temp.getWeights()){
+            for(int value : temp.getWeightsSucc()){
                 if(value < 0){
                     System.out.println("There is a negative arc");
                     return false;
@@ -361,8 +372,8 @@ public class Main {
     
     static private boolean sameWeight(ArrayList<State> graph){
         for(State temp : graph){
-            for(int value : temp.getWeights()){
-                int refValue = temp.getWeight(0);
+            for(int value : temp.getWeightsSucc()){
+                int refValue = temp.getWeightSucc(0);
                 if(value != refValue){
                     System.out.println("At least 2 vertex of a same state doesn't have the same weight");
                     return false;                    
@@ -375,7 +386,7 @@ public class Main {
     static private boolean zeroEntry(ArrayList<State> graph){
         for(State temp : graph){
             if(temp.isInput()){
-                for(int value : temp.getWeights()){
+                for(int value : temp.getWeightsSucc()){
                     if(value != 0){
                         System.out.println("An entry vertice doesn't have a weight of 0");
                         return false;                    
@@ -394,6 +405,7 @@ public class Main {
         ArrayList<State> dateSorted = new ArrayList<>();
         State debut = getInput(graph);
         State fin = getOutput(graph);
+        
         State curr = fin;
         dateSorted.add(curr);
         while(curr != debut){
@@ -406,33 +418,78 @@ public class Main {
         }
         return dateSorted;
     }
+    /*
+    static private ArrayList<State> lateDate(ArrayList<State> graph){
+        ArrayList<State> dateSorted = new ArrayList<>();
+        State debut = getInput(graph);
+        State fin = getOutput(graph);
+        
+        State curr = debut;
+        dateSorted.add(curr);
+        while(curr != fin){
+            for(State next : curr.getSuccessors()){
+                if(next == curr.getMinSucc()){                    
+                    dateSorted.add(next);
+                    curr = next;
+                }
+            }
+        }
+        return dateSorted;
+    }
+    */
     
-    static private State computeDist(State state){ // compute the maximal distance bewteen a state and the input (all predecessors must have finished)
+    static private State computeMaxDist(State state){ // compute the maximal distance bewteen a state and the input (all predecessors must have finished)
         int max_previous_dist = -1; // the maximal distance from the state to the input of all the predecessors
         for(State prev : state.getPredecessors()){
             
-            if((max_previous_dist < prev.getdFromInput() + prev.getWeightsOfSucc(state))){
+            if((max_previous_dist < prev.getMaxDistFromInput() + prev.getWeightsOfSucc(state))){
                 int weightState = prev.getWeightsOfSucc(state);  
-                int weightVector = prev.getdFromInput();
+                int weightVector = prev.getMaxDistFromInput();
                 max_previous_dist =  weightState + weightVector;                
                 state.setMaxPrev(prev);
             }
         }
         
-        if(state.getdFromInput() < max_previous_dist)
-            state.setdFromInput(max_previous_dist);
+        if(state.getMaxDistFromInput() < max_previous_dist)
+            state.setMaxDistFromInput(max_previous_dist);
         
         for(int i = 0; i<state.getSuccessorsLength(); i++){
-            state.setSuccessor(computeDist(state.getSuccessor(i)),i);
+            state.setSuccessor(computeMaxDist(state.getSuccessor(i)),i);
         }
-        
         return state;
     }
-    
+    /*
+    static private State computeMinDist(State state){ // compute the maximal distance bewteen a state and the input (all predecessors must have finished)
+        int min_next_dist = state.getMaxDistFromInput(); // the maximal distance from the state to the input of all the predecessors
+        for(State next : state.getSuccessors()){    
+            if((min_next_dist > next.getMaxDistFromInput() - state.getWeightsOfSucc(next))){
+                int weightState = next.getWeightsOfPred(state);  
+                int weightVector = next.getMinDistFromInput();
+                min_next_dist =  weightState + weightVector;                
+                state.setMinSucc(next);
+            }
+        }
+        
+        if(state.getMinDistFromInput() > min_next_dist)
+            state.setMinDistFromInput(min_next_dist);
+        
+        for(int i = 0; i<state.getPredecessorsLength(); i++){
+            state.setPredecessor(computeMinDist(state.getPredecessor(i)),i);
+        }
+        return state;
+    }
+    */
     static private void printEarly(ArrayList<State> graph){
         System.out.println("\nThe shortest time is : ");
         for(State temp : graph)
-            System.out.println("Le state " + temp.getStateNB() + " et sa distance est de " + temp.getdFromInput());
+            System.out.println("Le state " + temp.getStateNB() + " et sa distance est de " + temp.getMaxDistFromInput());
     }
+    /*
+    static private void printLatest(ArrayList<State> graph){
+        System.out.println("\nThe longest time is : ");
+        for(State temp : graph)
+            System.out.println("Le state " + temp.getStateNB() + " et sa distance est de " + temp.getMaxDistFromInput());
+    }
+    */
     // END PART II - 6)
 }

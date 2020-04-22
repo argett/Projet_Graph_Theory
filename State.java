@@ -13,21 +13,22 @@ import java.util.ArrayList;
  */
 public class State {    
     private ArrayList<State> predecessors = new ArrayList<>();
-    private ArrayList<Integer> weight = new ArrayList<>();
+    private ArrayList<Integer> weightPred = new ArrayList<>();
     private ArrayList<State> successors = new ArrayList<>();
+    private ArrayList<Integer> weightSucc = new ArrayList<>();
     private boolean input;
     private boolean output;
     private int rank;
     private int stateNB; // 
-    private int dFromInput; // the maximum distance bewteen the input and the state
-    private State maxPrev; // the place of the predecessor state from where comes from the maximal distance with the input
+    private int maxDistFromInput; // the maximum distance bewteen the input and the state
+    private State maxPrev; // the place of the predecessor state from where comes from the maximal distance with the input --> used for ealriest date
     
     State(int i){ 
         input = false;
         output = false;
         rank = -1;
         stateNB = i;
-        dFromInput = 0;
+        maxDistFromInput = 0;
     }
 
     public State getSuccessor(int i) {
@@ -53,24 +54,30 @@ public class State {
         return succ;
     }
     
-    public int getWeight(int i) {
-        return weight.get(i);
+    public int getWeightSucc(int i) {
+        return weightSucc.get(i);
     }    
-    public ArrayList<Integer> getWeights() {
-        return weight;
-    }    
-    public int getWeightLength() {
-        return weight.size();
+    public int getWeightPred(int i) {
+        return weightPred.get(i);
     }
-    public void addWeight(int i) {
-        this.weight.add(i);
+    public ArrayList<Integer> getWeightsSucc() {
+        return weightSucc;
     }    
+    public int getWeightSuccLength() {
+        return weightSucc.size();
+    }
+    public void addWeightSucc(int i) {
+        this.weightSucc.add(i);
+    }   
+    public void addWeightPred(int i) {
+        this.weightPred.add(i);
+    } 
     public Integer getWeightsOfSucc(State state){
         int rank = -1;
         for(State temp : this.successors){
             rank++;
             if(temp == state)
-                return this.getWeight(rank);
+                return this.getWeightSucc(rank);
         }
         System.out.println("Probleme dans la liste des successor de weight");
         return null;
@@ -80,21 +87,24 @@ public class State {
         for(State temp : this.predecessors){
             rank++;
             if(temp == state)
-                return this.getWeight(rank);
+                return this.getWeightPred(rank);
         }
         return null;
     }    
     public String printWeight() {
         String succ = "";
-        for(int i = 0; i<this.weight.size(); i++){
-            succ = succ.concat(String.valueOf(this.weight.get(i)) + " ");
+        for(int i = 0; i<this.weightSucc.size(); i++){
+            succ = succ.concat(String.valueOf(this.weightSucc.get(i)) + " ");
         }
         return succ;
     }    
     
-    public State getPredecessors(int i) {
+    public State getPredecessor(int i) {
         return predecessors.get(i);
     }    
+    public State setPredecessor(State state, int rank) {
+        return predecessors.set(rank, state);
+    }  
     public ArrayList<State> getPredecessors() {
         return predecessors;
     }    
@@ -155,11 +165,11 @@ public class State {
         this.stateNB = stateNB;
     } 
     
-    public int getdFromInput() {
-        return dFromInput;
+    public int getMaxDistFromInput() {
+        return maxDistFromInput;
     }
-    public void setdFromInput(int dist) {
-        this.dFromInput = dist;
+    public void setMaxDistFromInput(int dist) {
+        this.maxDistFromInput = dist;
     }
     
     public State getMaxPrev() {
@@ -168,5 +178,4 @@ public class State {
     public void setMaxPrev(State prev) {
         this.maxPrev = prev;
     }
-    
 }
