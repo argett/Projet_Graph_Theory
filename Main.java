@@ -25,11 +25,11 @@ public class Main {
             theGraph.clear();
             theGraph = fillGraph(theGraph, graph);
             
-            
+            // matrixes
             adjencyMatrix(theGraph);
             valueMatrix(theGraph);
+            // we make the ranks
             theGraph.set(0, makeRanks(theGraph.get(0)));
-            ArrayList<State> ranks = sortedByRank(theGraph);
             printRanks(theGraph);
             
             if(isSchedulingGraph(theGraph)){
@@ -283,19 +283,19 @@ public class Main {
     static private State makeRanks(State state){
         boolean ranked = true;
         int max_previous_rank = -1; // the maximal rank of the rank of all the predecessors
-        for(State prev : state.getPredecessors()){
+        for(State prev : state.getPredecessors()){ // we check each precessors : does they have a rank ? 
             if(prev.getRank() == -1)
-                ranked = false;
+                ranked = false; // if at least 1 predecessor doesn't have a rank, we can't set the rank of the actual state
             else{
-                if(max_previous_rank < prev.getRank())
+                if(max_previous_rank < prev.getRank()) // else, we take the maximal ranl the all predecessors
                     max_previous_rank = prev.getRank();
                             
             }
         }
         if(ranked)
-            state.setRank(max_previous_rank+1);
+            state.setRank(max_previous_rank+1); // we set the rank of the state
         
-        for(int i = 0; i<state.getSuccessorsLength(); i++){
+        for(int i = 0; i<state.getSuccessorsLength(); i++){ // we call the function for all successors
             state.setSuccessor(makeRanks(state.getSuccessor(i)),i);
         }
         
@@ -306,14 +306,6 @@ public class Main {
         for(State next : graph){
             System.out.println("The state " + next.getStateNB() + " has the rank " + next.getRank());            
         }
-    }
-    
-    static ArrayList<State> sortedByRank(ArrayList<State> initGraph){
-        ArrayList<State> newGraph = new ArrayList<>();
-        
-        
-        
-        return newGraph;
     }
     // END PART I - 4)
     
@@ -406,7 +398,7 @@ public class Main {
         State debut = getInput(graph);
         State fin = getOutput(graph);
         
-        State curr = fin;
+        State curr = fin;  
         dateSorted.add(curr);
         while(curr != debut){
             for(State prev : curr.getPredecessors()){
@@ -438,11 +430,11 @@ public class Main {
     }
     */
     
-    static private State computeMaxDist(State state){ // compute the maximal distance bewteen a state and the input (all predecessors must have finished)
+    static private State computeMaxDist(State state){ // compute the maximal distance bewteen a state and the input (=all predecessors must have finished)
         int max_previous_dist = -1; // the maximal distance from the state to the input of all the predecessors
         for(State prev : state.getPredecessors()){
             
-            if((max_previous_dist < prev.getMaxDistFromInput() + prev.getWeightsOfSucc(state))){
+            if((max_previous_dist < prev.getMaxDistFromInput() + prev.getWeightsOfSucc(state))){ // if the path is longer than another path
                 int weightState = prev.getWeightsOfSucc(state);  
                 int weightVector = prev.getMaxDistFromInput();
                 max_previous_dist =  weightState + weightVector;                
@@ -450,7 +442,7 @@ public class Main {
             }
         }
         
-        if(state.getMaxDistFromInput() < max_previous_dist)
+        if(state.getMaxDistFromInput() < max_previous_dist) // after having checked all predecessors, we set the distance of the actual length as the sum of the distance of the predecessor + the edge
             state.setMaxDistFromInput(max_previous_dist);
         
         for(int i = 0; i<state.getSuccessorsLength(); i++){

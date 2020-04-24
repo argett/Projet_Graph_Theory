@@ -11,17 +11,17 @@ import java.util.ArrayList;
  *
  * @author lilian
  */
-public class State {    
-    private ArrayList<State> predecessors = new ArrayList<>();
-    private ArrayList<Integer> weightPred = new ArrayList<>();
-    private ArrayList<State> successors = new ArrayList<>();
-    private ArrayList<Integer> weightSucc = new ArrayList<>();
-    private boolean input;
-    private boolean output;
-    private int rank;
-    private int stateNB; // 
-    private int maxDistFromInput; // the maximum distance bewteen the input and the state
-    private State maxPrev; // the place of the predecessor state from where comes from the maximal distance with the input --> used for ealriest date
+public class State {    					// a state = a vertice
+    private ArrayList<State> predecessors = new ArrayList<>(); 	// the list of all predecessors
+    private ArrayList<Integer> weightPred = new ArrayList<>(); 	// the weight of all predecessors
+    private ArrayList<State> successors = new ArrayList<>(); 	// the list of all successors
+    private ArrayList<Integer> weightSucc = new ArrayList<>(); 	// the weight of all successors
+    private boolean input;					// if the state an input ?
+    private boolean output;					// if the state an output?
+    private int rank;						// the rank of the state
+    private int stateNB; 					// the "name" of the state
+    private int maxDistFromInput; 				// the maximum distance bewteen the input and the state
+    private State maxPrev; 					// the place of the predecessor state from where comes from the maximal distance with the input --> used for ealriest date
     
     State(int i){ 
         input = false;
