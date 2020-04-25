@@ -1,0 +1,66 @@
+----------- adjency matrix -------------
+    0  1  2  3  4  5  6  7  8  9  10 11 12 13 14
+ 0  F  T  T  F  F  F  F  F  F  F  F  F  F  F  F 
+ 1  F  F  F  T  F  F  T  F  F  F  F  F  F  F  F 
+ 2  F  F  F  F  F  F  T  F  F  F  F  F  F  F  F 
+ 3  F  F  F  F  T  F  F  F  F  F  F  F  F  F  F 
+ 4  F  F  F  F  F  T  F  F  F  F  F  F  F  F  F 
+ 5  F  F  F  F  F  F  F  F  F  F  F  F  F  F  T 
+ 6  F  F  F  F  F  T  F  T  F  F  F  T  F  T  F 
+ 7  F  F  F  F  F  F  F  F  T  F  F  F  T  F  F 
+ 8  F  F  F  F  F  T  F  F  F  T  F  F  T  F  F 
+ 9  F  F  F  F  F  F  F  F  F  F  T  F  T  F  F 
+ 10 F  F  F  F  F  F  F  F  F  F  F  F  T  F  F 
+ 11 F  F  F  F  F  F  F  F  F  F  F  F  F  T  F 
+ 12 F  F  F  F  F  F  F  F  F  F  F  F  F  F  T 
+ 13 F  F  F  F  F  F  F  F  F  F  F  F  F  F  T 
+ 14 F  F  F  F  F  F  F  F  F  F  F  F  F  F  F 
+----------------------------------------
+------------- value matrix -------------
+    0  1  2  3  4  5  6  7  8  9  10 11 12 13 14
+ 0  *  0  0  *  *  *  *  *  *  *  *  *  *  *  * 
+ 1  *  *  *  2  *  *  2  *  *  *  *  *  *  *  * 
+ 2  *  *  *  *  *  *  5  *  *  *  *  *  *  *  * 
+ 3  *  *  *  *  4  *  *  *  *  *  *  *  *  *  * 
+ 4  *  *  *  *  *  1  *  *  *  *  *  *  *  *  * 
+ 5  *  *  *  *  *  *  *  *  *  *  *  *  *  *  9 
+ 6  *  *  *  *  *  2  *  2  *  *  *  2  *  2  * 
+ 7  *  *  *  *  *  *  *  *  5  *  *  *  5  *  * 
+ 8  *  *  *  *  *  5  *  *  *  5  *  *  5  *  * 
+ 9  *  *  *  *  *  *  *  *  *  *  9  *  9  *  * 
+ 10 *  *  *  *  *  *  *  *  *  *  *  *  2  *  * 
+ 11 *  *  *  *  *  *  *  *  *  *  *  *  *  19 * 
+ 12 *  *  *  *  *  *  *  *  *  *  *  *  *  *  5 
+ 13 *  *  *  *  *  *  *  *  *  *  *  *  *  *  1 
+ 14 *  *  *  *  *  *  *  *  *  *  *  *  *  *  * 
+----------------------------------------
+
+There is no cycle is the graph so we can compute the rank and the times :
+
+The ranks are : 
+The state 0 has the rank 0
+The state 1 has the rank 1
+The state 2 has the rank 1
+The state 3 has the rank 2
+The state 4 has the rank 3
+The state 5 has the rank 5
+The state 6 has the rank 2
+The state 7 has the rank 3
+The state 8 has the rank 4
+The state 9 has the rank 5
+The state 10 has the rank 6
+The state 11 has the rank 3
+The state 12 has the rank 7
+The state 13 has the rank 4
+The state 14 has the rank 8
+
+The shortest time is : 
+The state 14 and its distance from input is 33
+The state 12 and its distance from input is 28
+The state 10 and its distance from input is 26
+The state 9 and its distance from input is 17
+The state 8 and its distance from input is 12
+The state 7 and its distance from input is 7
+The state 6 and its distance from input is 5
+The state 2 and its distance from input is 0
+The state 0 and its distance from input is 0

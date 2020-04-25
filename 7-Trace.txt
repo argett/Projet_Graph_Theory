@@ -1,0 +1,32 @@
+----------- adjency matrix -------------
+    0  1  2  3  4  5  6  7  8  9  10 11
+ 0  F  F  F  F  F  F  F  T  F  F  F  F 
+ 1  F  F  F  F  F  F  F  F  F  T  F  F 
+ 2  F  F  F  F  F  F  F  F  F  F  F  T 
+ 3  F  F  F  F  F  F  F  F  F  T  F  F 
+ 4  F  T  F  F  F  T  F  F  F  F  F  F 
+ 5  F  F  F  F  F  F  F  F  T  F  F  F 
+ 6  F  F  F  T  F  F  F  F  F  F  T  F 
+ 7  F  F  T  F  F  F  F  F  T  F  F  F 
+ 8  F  F  F  F  F  F  F  F  F  F  F  T 
+ 9  F  F  F  F  T  F  F  F  F  F  F  F 
+ 10 F  T  F  F  F  F  T  F  F  F  F  F 
+ 11 F  F  F  F  F  F  F  F  F  F  F  F 
+----------------------------------------
+------------- value matrix -------------
+    0  1  2  3  4  5  6  7  8  9  10 11
+ 0  *  *  *  *  *  *  *  0  *  *  *  * 
+ 1  *  *  *  *  *  *  *  *  *  1  *  * 
+ 2  *  *  *  *  *  *  *  *  *  *  *  2 
+ 3  *  *  *  *  *  *  *  *  *  3  *  * 
+ 4  *  4  *  *  *  4  *  *  *  *  *  * 
+ 5  *  *  *  *  *  *  *  *  5  *  *  * 
+ 6  *  *  *  6  *  *  *  *  *  *  6  * 
+ 7  *  *  7  *  *  *  *  *  7  *  *  * 
+ 8  *  *  *  *  *  *  *  *  *  *  *  8 
+ 9  *  *  *  *  9  *  *  *  *  *  *  * 
+ 10 *  10 *  *  *  *  10 *  *  *  *  * 
+ 11 *  *  *  *  *  *  *  *  *  *  *  * 
+----------------------------------------
+
+There is a cycle is the graph so we can't compute either the rank or the times

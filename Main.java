@@ -1,6 +1,9 @@
-﻿package javaapplication5;
+package javaapplication5;
 
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -10,40 +13,48 @@ import static javaapplication5.State.getInput;
 import static javaapplication5.State.getOutput;
 
 public class Main {
-    public static void main(String[] args) {      
+    public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {      // throws is usful to create the trace.txt file
         boolean continu = false;
         int choice;
         ArrayList<State> theGraph = new ArrayList<>();
-        
         do{
             String graph = "";
+            String graphTrace = "";
             Scanner sc = new Scanner(System.in);
             
             System.out.println("Which graph du you want to try ? from 1 to 13 except 10");
             graph = sc.nextLine();
+            graphTrace = graph;
+            graphTrace = graphTrace.concat("-Trace.txt");            
+            PrintWriter writer = new PrintWriter(graphTrace, "UTF-8");
             graph = graph.concat(".txt");
-            theGraph.clear();
+            
+            theGraph.clear(); // if we check 2 graphs or more in a row
             theGraph = fillGraph(theGraph, graph);
             
             // matrixes
-            adjencyMatrix(theGraph);
-            valueMatrix(theGraph);
+            adjencyMatrix(theGraph, writer);
+            valueMatrix(theGraph, writer);
             // we make the ranks
-            theGraph.set(0, makeRanks(theGraph.get(0)));
-            printRanks(theGraph);
-            
-            if(isSchedulingGraph(theGraph)){
-                getInput(theGraph).modifInput(computeMaxDist(getInput(theGraph)));   // we put the new Graph with the distance instead of the old graph --> used for ealiestDate
-                //getOutput(theGraph).modifInput(computeMinDist(getOutput(theGraph)));   // used for latest date
+            if(!cycleGraph(theGraph)){
+                writer.println("\nThere is no cycle is the graph so we can compute the rank and the times :");
+                theGraph.set(0, makeRanks(theGraph.get(0)));
+                printRanks(theGraph, writer);
                 
-                printEarly(earlyDate(theGraph));
-                //printLatest(lateDate(theGraph));
-                
+                if(isSchedulingGraph(theGraph, writer)){
+                    getInput(theGraph).modifInput(computeMaxDist(getInput(theGraph)));   // we put the new Graph with the distance instead of the old graph --> used for ealiestDate
+                    //getOutput(theGraph).modifInput(computeMinDist(getOutput(theGraph)));   // used for latest date
+
+                    printEarly(earlyDate(theGraph), writer);
+                    //printLatest(lateDate(theGraph));                
+                }
+                else 
+                    writer.println("The graph can't be scheduled"); 
             }
-                
-            else 
-                System.out.println("The graph can't be scheduled");
-            
+            else{                
+                writer.println("\nThere is a cycle is the graph so we can't compute either the rank or the times");
+            }
+            writer.close();
             System.out.println("Do you want to try another graph ? 0/1");
             choice = sc.nextInt();
             if(choice == 1)
@@ -195,25 +206,29 @@ public class Main {
     
     
     // PART I - 2)
-    static private void  adjencyMatrix(ArrayList<State> graph){
-        System.out.println("----------- adjency matrix -------------");
-        System.out.print("   ");
+    static private void  adjencyMatrix(ArrayList<State> graph, PrintWriter file){
+        file.println("----------- adjency matrix -------------");
+        file.print("   ");
         for(int i=0; i< graph.size(); i++){
             if(i<10)
-                System.out.print(" "+i+" ");
+                file.print(" "+i+" ");
             else
-                System.out.print(" "+i);
+                file.print(" "+i);
         }
-        System.out.print("\n");
+        file.print("\n");
         
         boolean find = false;
         for(int i=0; i< graph.size(); i++){                                      // lignes
             
             // to get a proper diplayed matrix 
-            if(i<10)
-                System.out.print(" "+i+" ");
-            else
-                System.out.print(" "+i);
+            if(i<10){
+                file.print(" "+i+" ");
+            }
+                
+            else{
+               file.print(" "+i);
+            }
+                
             
             
             for(int j=0; j< graph.size(); j++){                                  // columns
@@ -222,36 +237,36 @@ public class Main {
                         find = true;
                 }
                 if(find){
-                    System.out.print(" T ");
+                    file.print(" T ");
                     find = false;
                 } else  {
-                    System.out.print(" F ");
+                    file.print(" F ");
                 }
             }
-            System.out.print("\n");
+            file.print("\n");
         }
-        System.out.println("----------------------------------------");
+        file.println("----------------------------------------");
     }
     
-    static public void valueMatrix(ArrayList<State> graph){
-     System.out.println("------------- value matrix -------------");
-        System.out.print("   ");
+    static public void valueMatrix(ArrayList<State> graph, PrintWriter file){
+        file.println("------------- value matrix -------------");
+        file.print("   ");
         for(int i=0; i< graph.size(); i++){
             if(i<10)
-                System.out.print(" "+i+" ");
+                file.print(" "+i+" ");
             else
-                System.out.print(" "+i);
+                file.print(" "+i);
         }
-        System.out.print("\n");
+        file.print("\n");
         
         int value = -1;
         for(int i=0; i< graph.size(); i++){                                      // lignes
             
             // to get a proper diplayed matrix 
             if(i<10)
-                System.out.print(" "+i+" ");
+                file.print(" "+i+" ");
             else
-                System.out.print(" "+i);
+                file.print(" "+i);
             
             
             for(int j=0; j< graph.size(); j++){                                  // columns
@@ -261,64 +276,109 @@ public class Main {
                 }
                 if(value != -1){
                     if(graph.get(i).getWeightSucc(value) < -9)
-                        System.out.print(graph.get(i).getWeightSucc(value));                        
+                        file.print(graph.get(i).getWeightSucc(value));                        
                     else if (graph.get(i).getWeightSucc(value) < 0 || graph.get(i).getWeightSucc(value)>=10)
-                        System.out.print(" " + graph.get(i).getWeightSucc(value));
+                        file.print(" " + graph.get(i).getWeightSucc(value));
                     else 
-                        System.out.print(" " + graph.get(i).getWeightSucc(value) + " ");
+                        file.print(" " + graph.get(i).getWeightSucc(value) + " ");
                     value = -1;
                 } else  {
-                    System.out.print(" * ");
+                    file.print(" * ");
                 }
             }
-            System.out.print("\n");
+            file.print("\n");
         }
-        System.out.println("----------------------------------------");
+        file.println("----------------------------------------");
     }
     // END PART I - 2)
     
+    // PART I - 3)
+    static public boolean cycleGraph(ArrayList<State> graph) {    	
+    	boolean answer = false ; 
+   
+    	boolean G[][]= new boolean[graph.size()][graph.size()] ; 
+    	
+        boolean find = false;
+        for(int i=0; i< graph.size(); i++){ // lignes
+            
+            // to get a proper displayed matrix 
+            for(int j=0; j< graph.size(); j++){
+                for(int k=0; k< graph.get(i).getSuccessorsLength(); k++){
+                    if(graph.get(i).getSuccessor(k).getStateNB() == graph.get(j).getStateNB())
+                        find = true;
+                }
+                if(find){
+                    G[i][j]= true;                    
+                    find = false ; 
+                    
+                } else  {
+                    G[i][j]= false ;    
+                }
+            }    
+        }
+        
+        for(int i = 0 ; i<graph.size(); i++) {
+            for(int j = 0 ; j<graph.size(); j++) {
+                if(G[i][j]==true && G[j][i]==true) {
+                    answer = true ; 
+                }
+            }
+        }
+        return answer ; 
+    }
+    // END PART I - 3)
     
     
     // PART I - 4)
     static private State makeRanks(State state){
+        //System.out.println("On est state " + state.getStateNB());
         boolean ranked = true;
         int max_previous_rank = -1; // the maximal rank of the rank of all the predecessors
         for(State prev : state.getPredecessors()){ // we check each precessors : does they have a rank ? 
-            if(prev.getRank() == -1)
+            if(prev.getRank() == -1){
                 ranked = false; // if at least 1 predecessor doesn't have a rank, we can't set the rank of the actual state
+                //System.out.println("le prédécesseur " + prev.getStateNB() +" n'est pas init");
+            }
+                
             else{
+                //System.out.println("le prédécesseur " + prev.getStateNB() +" est init");
                 if(max_previous_rank < prev.getRank()) // else, we take the maximal ranl the all predecessors
                     max_previous_rank = prev.getRank();
                             
             }
         }
-        if(ranked)
+        if(ranked){
             state.setRank(max_previous_rank+1); // we set the rank of the state
+            //System.out.println("on met à jour le rank par " + state.getRank());            
+        }
+            
         
         for(int i = 0; i<state.getSuccessorsLength(); i++){ // we call the function for all successors
+            //System.out.println("A appelle le successeur " + state.getSuccessor(i).getStateNB() + " à partir du state je le rappelle "+ state.getStateNB() + "\n");            
             state.setSuccessor(makeRanks(state.getSuccessor(i)),i);
         }
         
         return state;
     }
     
-    static private void printRanks(ArrayList<State> graph){
+    static private void printRanks(ArrayList<State> graph, PrintWriter file){
+        file.println("\nThe ranks are : ");
         for(State next : graph){
-            System.out.println("The state " + next.getStateNB() + " has the rank " + next.getRank());            
+            file.println("The state " + next.getStateNB() + " has the rank " + next.getRank());            
         }
     }
     // END PART I - 4)
     
     
     // PART II - 5)
-    static private boolean isSchedulingGraph(ArrayList<State> graph){
-        if(oneInput(graph) && oneOutput(graph) && nonNegative(graph) && sameWeight(graph) && zeroEntry(graph))
+    static private boolean isSchedulingGraph(ArrayList<State> graph, PrintWriter file){
+        if(oneInput(graph, file) && oneOutput(graph, file) && nonNegative(graph, file) && sameWeight(graph, file) && zeroEntry(graph, file))
             return true;
         else
             return false;
     }
     
-    static private boolean oneInput(ArrayList<State> graph){
+    static private boolean oneInput(ArrayList<State> graph, PrintWriter file){
         int nb_input = 0;
         for(State temp : graph){
             if(temp.isInput())
@@ -328,12 +388,12 @@ public class Main {
         if(nb_input == 1)
             return true;
         else {
-            System.out.println("There is more than one input");
+            file.println("\nThere is more than one input");
             return false;            
         }
     }
     
-    static private boolean oneOutput(ArrayList<State> graph){
+    static private boolean oneOutput(ArrayList<State> graph, PrintWriter file){
         int nb_output = 0;
         for(State temp : graph){
             if(temp.isOutput())
@@ -343,17 +403,17 @@ public class Main {
         if(nb_output == 1)
             return true;
         else {
-            System.out.println("There is more than one output");
+            file.println("\nThere is more than one output");
             return false;            
         }
     }
     
-    static private boolean nonNegative(ArrayList<State> graph){
+    static private boolean nonNegative(ArrayList<State> graph, PrintWriter file){
         boolean negative = false;
         for(State temp : graph){
             for(int value : temp.getWeightsSucc()){
                 if(value < 0){
-                    System.out.println("There is a negative arc");
+                    file.println("\nThere is a negative arc");
                     return false;
                 }
             }
@@ -362,12 +422,12 @@ public class Main {
         return true;
     }
     
-    static private boolean sameWeight(ArrayList<State> graph){
+    static private boolean sameWeight(ArrayList<State> graph, PrintWriter file){
         for(State temp : graph){
             for(int value : temp.getWeightsSucc()){
                 int refValue = temp.getWeightSucc(0);
                 if(value != refValue){
-                    System.out.println("At least 2 vertex of a same state doesn't have the same weight");
+                    file.println("\nAt least 2 vertex of a same state doesn't have the same weight");
                     return false;                    
                 }
             }
@@ -375,12 +435,12 @@ public class Main {
         return true;
     }
     
-    static private boolean zeroEntry(ArrayList<State> graph){
+    static private boolean zeroEntry(ArrayList<State> graph, PrintWriter file){
         for(State temp : graph){
             if(temp.isInput()){
                 for(int value : temp.getWeightsSucc()){
                     if(value != 0){
-                        System.out.println("An entry vertice doesn't have a weight of 0");
+                        file.println("\nAn entry vertice doesn't have a weight of 0");
                         return false;                    
                     }
                 }
@@ -471,10 +531,10 @@ public class Main {
         return state;
     }
     */
-    static private void printEarly(ArrayList<State> graph){
-        System.out.println("\nThe shortest time is : ");
+    static private void printEarly(ArrayList<State> graph, PrintWriter file){
+        file.println("\nThe shortest time is : ");
         for(State temp : graph)
-            System.out.println("Le state " + temp.getStateNB() + " et sa distance est de " + temp.getMaxDistFromInput());
+            file.println("The state " + temp.getStateNB() + " and its distance from input is " + temp.getMaxDistFromInput());
     }
     /*
     static private void printLatest(ArrayList<State> graph){

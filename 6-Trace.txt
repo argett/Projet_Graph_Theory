@@ -1,0 +1,53 @@
+----------- adjency matrix -------------
+    0  1  2  3  4  5  6  7  8  9  10 11
+ 0  F  F  F  F  T  T  T  T  F  F  T  F 
+ 1  F  F  F  F  F  F  F  F  F  T  F  F 
+ 2  F  F  F  F  F  F  F  F  F  T  F  F 
+ 3  F  F  F  F  F  F  F  F  F  T  F  F 
+ 4  F  T  F  F  F  F  F  F  F  F  F  F 
+ 5  F  T  F  F  F  F  F  F  T  F  F  F 
+ 6  F  F  F  T  F  F  F  F  F  F  F  F 
+ 7  F  F  T  F  F  F  F  F  T  F  F  F 
+ 8  F  F  F  F  F  F  F  F  F  F  F  F 
+ 9  F  F  F  F  F  F  F  F  F  F  F  T 
+ 10 F  T  F  T  F  F  F  F  F  F  F  F 
+ 11 F  F  F  F  F  F  F  F  F  F  F  F 
+----------------------------------------
+------------- value matrix -------------
+    0  1  2  3  4  5  6  7  8  9  10 11
+ 0  *  *  *  *  0  0  0  0  *  *  0  * 
+ 1  *  *  *  *  *  *  *  *  *  1  *  * 
+ 2  *  *  *  *  *  *  *  *  *  2  *  * 
+ 3  *  *  *  *  *  *  *  *  *  3  *  * 
+ 4  *  4  *  *  *  *  *  *  *  *  *  * 
+ 5  *  5  *  *  *  *  *  *  5  *  *  * 
+ 6  *  *  *  6  *  *  *  *  *  *  *  * 
+ 7  *  *  7  *  *  *  *  *  7  *  *  * 
+ 8  *  *  *  *  *  *  *  *  *  *  *  * 
+ 9  *  *  *  *  *  *  *  *  *  *  *  9 
+ 10 *  10 *  10 *  *  *  *  *  *  *  * 
+ 11 *  *  *  *  *  *  *  *  *  *  *  * 
+----------------------------------------
+
+There is no cycle is the graph so we can compute the rank and the times :
+
+The ranks are : 
+The state 0 has the rank 0
+The state 1 has the rank 2
+The state 2 has the rank 2
+The state 3 has the rank 2
+The state 4 has the rank 1
+The state 5 has the rank 1
+The state 6 has the rank 1
+The state 7 has the rank 1
+The state 8 has the rank 2
+The state 9 has the rank 3
+The state 10 has the rank 1
+The state 11 has the rank 4
+
+The shortest time is : 
+The state 11 and its distance from input is 22
+The state 9 and its distance from input is 13
+The state 3 and its distance from input is 10
+The state 10 and its distance from input is 0
+The state 0 and its distance from input is 0

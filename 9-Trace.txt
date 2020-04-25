@@ -1,0 +1,50 @@
+----------- adjency matrix -------------
+    0  1  2  3  4  5  6  7  8  9 
+ 0  F  T  T  F  F  F  F  F  F  F 
+ 1  F  F  T  F  T  T  F  F  F  F 
+ 2  F  F  F  T  T  F  F  F  T  F 
+ 3  F  F  F  F  F  F  F  T  F  T 
+ 4  F  F  F  F  F  T  T  F  T  F 
+ 5  F  F  F  F  F  F  T  T  F  F 
+ 6  F  F  F  F  F  F  F  F  F  T 
+ 7  F  F  F  F  F  F  F  F  T  F 
+ 8  F  F  F  F  F  F  F  F  F  T 
+ 9  F  F  F  F  F  F  F  F  F  F 
+----------------------------------------
+------------- value matrix -------------
+    0  1  2  3  4  5  6  7  8  9 
+ 0  *  0  0  *  *  *  *  *  *  * 
+ 1  *  *  2  *  2  2  *  *  *  * 
+ 2  *  *  *  3  3  *  *  *  3  * 
+ 3  *  *  *  *  *  *  *  5  *  5 
+ 4  *  *  *  *  *  6  6  *  6  * 
+ 5  *  *  *  *  *  *  2  2  *  * 
+ 6  *  *  *  *  *  *  *  *  *  1 
+ 7  *  *  *  *  *  *  *  *  6  * 
+ 8  *  *  *  *  *  *  *  *  *  1 
+ 9  *  *  *  *  *  *  *  *  *  * 
+----------------------------------------
+
+There is no cycle is the graph so we can compute the rank and the times :
+
+The ranks are : 
+The state 0 has the rank 0
+The state 1 has the rank 1
+The state 2 has the rank 2
+The state 3 has the rank 3
+The state 4 has the rank 3
+The state 5 has the rank 4
+The state 6 has the rank 5
+The state 7 has the rank 5
+The state 8 has the rank 6
+The state 9 has the rank 7
+
+The shortest time is : 
+The state 9 and its distance from input is 20
+The state 8 and its distance from input is 19
+The state 7 and its distance from input is 13
+The state 5 and its distance from input is 11
+The state 4 and its distance from input is 5
+The state 2 and its distance from input is 2
+The state 1 and its distance from input is 0
+The state 0 and its distance from input is 0
