@@ -1,4 +1,4 @@
-package javaapplication5;
+﻿package javaapplication5;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,7 +19,7 @@ public class Main {
             String graph = "";
             Scanner sc = new Scanner(System.in);
             
-            System.out.println("Which graph du you want to try ? 1,2,3...");
+            System.out.println("Which graph du you want to try ? from 1 to 13 except 10");
             graph = sc.nextLine();
             graph = graph.concat(".txt");
             theGraph.clear();
